@@ -6,7 +6,9 @@ const bcrypt = require('bcrypt');
 const prisma = new PrismaClient();
 
 exports.filesGet = async (req, res) => {
-    res.render('index', { user: req.user });
+
+    const folders = await prisma.folder.findMany();
+    res.render('index', { user: req.user, folder: folders });
 };
 
 exports.membersSignUpGet = (req, res) => {
@@ -30,7 +32,34 @@ exports.membersSignUpPost = (req, res) => {
     });
 }
 
+exports.folderCreatePost = async (req, res) => {
+    await prisma.folder.create({
+        data: {
+            folderName: req.body.myfolder
+        }
+    })
+    const folders = await prisma.folder.findMany();
+    res.render('index', { user: req.user, folder: folders });
+}
 
+exports.foldersGet = async (req, res) => {
+    let i = Number(req.params.i);
+    const folder = await prisma.folder.findUnique({
+        where: {
+            id: i
+        }
+    })
+    res.render('folders', { folder: folder });
+}
+
+exports.membersLogOut = (req, res, next) => {
+    req.logout((err) => {
+        if (err) {
+            return next(err);
+        }
+        res.redirect("/");
+    });
+}
 
 
 async function main() {

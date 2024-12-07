@@ -10,18 +10,18 @@ const membersRouter = require("./routes/fileRouter")
 const bodyParser = require('body-parser');
 
 const app = express();
-
+const prisma = new PrismaClient()
 // Middleware to parse JSON bodies  
 app.use(bodyParser.json());
 
 // Middleware to parse URL-encoded bodies  
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const prisma = new PrismaClient()
+
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-app.use("/", membersRouter);
+
 
 app.use(
     expressSession({
@@ -41,6 +41,9 @@ app.use(
         ),
     }),
 );
+app.use(passport.session());
+app.use(express.urlencoded({ extended: false }));
+app.use("/", membersRouter);
 
 passport.use(
     new LocalStrategy(async (username, password, done) => {
@@ -82,9 +85,10 @@ passport.deserializeUser(async (id, done) => {
             }
         })
         const user = rows;
-
+        console.log(user)
         done(null, user);
     } catch (err) {
+
         done(err);
     }
 });
@@ -97,7 +101,9 @@ app.post(
         failureRedirect: "/",
         failureMessage: "Incorrect password or username"
     })
+
 );
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Express app listening on port ${PORT}!`));

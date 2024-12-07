@@ -7,25 +7,45 @@
 </head>
 
 <body>
-    <% if (!locals.user) {%>
+    <% if (locals.user) {%>
 
-        <h1>please log in</h1>
-
-
-        <form action="/log-in" method="POST">
-            <label for="username">Username</label>
-            <input id="username" name="username" placeholder="username" type="text" />
-            <label for="password">Password</label>
-            <input id="password" name="password" type="password" />
-            <button>Log In</button>
+        <form action="" method="POST">
+            <label for="myfolder">Create folder:</label>
+            <input type="text" id="myfolder" name="myfolder">
+            <input type="submit">
         </form>
-        <a href="/sign-up">Sign-up</a>
 
-        <%} else { %>
+        <% if (locals.folder) {%>
+            <ul>
+                <h1>
+                    <% for (let i=0; i < folder.length; i++) { %>
+                        <a href="/folders/<%= folder[i].id %>">
+                            <li>
 
-            <h1>Hello</h1>
-
+                                <%= folder[i].folderName %>
+                            </li>
+                        </a>
+                        <%}%>
+                </h1>
+            </ul>
             <% }%>
+                <a href="/log-out">LOG OUT</a>
+                <%} else { %>
+
+                    <h1>please log in</h1>
+
+
+                    <form action="/log-in" method="POST">
+                        <label for="username">Username</label>
+                        <input id="username" name="username" placeholder="username" type="text" />
+                        <label for="password">Password</label>
+                        <input id="password" name="password" type="password" />
+                        <button>Log In</button>
+                    </form>
+                    <a href="/sign-up">Sign-up</a>
+
+
+                    <% }%>
 </body>
 
 </html>
