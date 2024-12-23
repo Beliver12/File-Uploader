@@ -23,8 +23,8 @@ model User {
 model Folder {
   id         Int    @id @default(autoincrement())
   folderName String
-  User       User?  @relation(fields: [userId], references: [id])
-  userId     Int?
+  User       User   @relation(fields: [userId], references: [id])
+  userId     Int
   file       File[]
 }
 

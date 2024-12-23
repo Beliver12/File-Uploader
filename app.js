@@ -6,6 +6,7 @@ const { PrismaClient } = require('@prisma/client');
 const passport = require("passport");
 const LocalStrategy = require('passport-local').Strategy;
 const express = require('express');
+const { Pool } = require("pg");
 const membersRouter = require("./routes/fileRouter")
 const bodyParser = require('body-parser');
 
@@ -18,7 +19,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
-
+const connectionString = process.env.CONNECTION_STRING
+const pool = new Pool({
+    connectionString,
+});
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
@@ -26,7 +30,7 @@ app.set('view engine', 'ejs');
 app.use(
     expressSession({
         cookie: {
-            maxAge: 7 * 24 * 60 * 60 * 1000, // ms
+            maxAge: 1000 * 60 * 60 * 24
         },
         secret: 'a santa at nasa',
         resave: true,
@@ -49,12 +53,8 @@ passport.use(
     new LocalStrategy(async (username, password, done) => {
 
         try {
-            const rows = await prisma.user.findUnique({
-                where: {
-                    username: username
-                }
-            })
-            const user = rows;
+            const { rows } = await pool.query("SELECT * FROM User WHERE username = $1", [username]);
+            const user = rows[0];
 
             if (!user) {
                 return done(null, false, { message: "Incorrect username" });
@@ -79,19 +79,15 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser(async (id, done) => {
 
     try {
-        const rows = await prisma.user.findUnique({
-            where: {
-                id: id
-            }
-        })
-        const user = rows;
-        console.log(user)
+        const { rows } = await pool.query("SELECT * FROM User WHERE id = $1", [id]);
+        const user = rows[0];
+
         done(null, user);
     } catch (err) {
-
         done(err);
     }
 });
+
 
 app.post(
     "/log-in",

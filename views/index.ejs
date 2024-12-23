@@ -33,19 +33,23 @@
                 <%} else { %>
 
                     <h1>please log in</h1>
+                    <%- include("errors.ejs") %>
+                        <% if (locals.messages) {%>
+                            <p>
+                                <%= messages[0] %>
+                            </p>
+                            <%}%>
+                                <form action="/log-in" method="POST">
+                                    <label for="username">Username</label>
+                                    <input id="username" name="username" placeholder="username" type="text" />
+                                    <label for="password">Password</label>
+                                    <input id="password" name="password" type="password" />
+                                    <button>Log In</button>
+                                </form>
+                                <a href="/sign-up">Sign-up</a>
 
 
-                    <form action="/log-in" method="POST">
-                        <label for="username">Username</label>
-                        <input id="username" name="username" placeholder="username" type="text" />
-                        <label for="password">Password</label>
-                        <input id="password" name="password" type="password" />
-                        <button>Log In</button>
-                    </form>
-                    <a href="/sign-up">Sign-up</a>
-
-
-                    <% }%>
+                                <% }%>
 </body>
 
 </html>
