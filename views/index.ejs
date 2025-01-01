@@ -17,16 +17,23 @@
 
         <% if (locals.folder) {%>
             <ul>
-                <h1>
-                    <% for (let i=0; i < folder.length; i++) { %>
-                        <a href="/folders/<%= folder[i].id %>">
-                            <li>
 
-                                <%= folder[i].folderName %>
-                            </li>
+                <% for (let i=0; i < folder.length; i++) { %>
+
+                    <li>
+                        <a href="/folders/<%= folder[i].id %>">
+
+                            <%= folder[i].folderName %>
+
                         </a>
-                        <%}%>
-                </h1>
+
+                        <a href="/update/<%= folder[i].id %>">
+                            <button>update</button>
+                        </a>
+
+                    </li>
+                    <%}%>
+
             </ul>
             <% }%>
                 <a href="/log-out">LOG OUT</a>

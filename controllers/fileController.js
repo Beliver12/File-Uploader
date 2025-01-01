@@ -5,7 +5,20 @@ const { body, validationResult } = require("express-validator");
 
 const bcrypt = require('bcrypt');
 const multer = require("multer")
-const upload = multer({ dest: 'uploads/' })
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, '/uploads')
+    },
+    filename: function (req, file, cb) {
+
+        cb(null, file.originalname)
+    }
+})
+
+const upload = multer({ storage })
+
+
+
 const prisma = new PrismaClient();
 
 const passwordErr = "Passwords dont match!"
@@ -23,7 +36,7 @@ const validateUsername = [
                 username: value,
             }
         })
-        if (user.rows.length > 0) {
+        if (user) {
             throw new Error('Username already in use');
         }
     })
@@ -38,21 +51,36 @@ exports.membersSignUpGet = (req, res) => {
     res.render('sign-up-form');
 };
 
-exports.membersSignUpPost = (req, res) => {
-    bcrypt.hash(req.body.password, 10, async (err, hashedPassword) => {
-        if (err) {
-            return next(err);
+exports.membersSignUpPost = [
+    validatePassword,
+    validateUsername,
+
+    async (req, res, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).render("sign-up-form", {
+                title: "Create movie",
+                errors: errors.array(),
+            });
         }
-        currentUser = req.body.username;
-        const user = await prisma.user.create({
-            data: {
-                username: req.body.username,
-                password: hashedPassword,
-            },
+
+        bcrypt.hash(req.body.password, 10, async (err, hashedPassword) => {
+            if (err) {
+                return next(err);
+            }
+            currentUser = req.body.username;
+            const user = await prisma.user.create({
+                data: {
+                    username: req.body.username,
+                    password: hashedPassword,
+                },
+            });
+            res.render("index");
+
         });
-        res.render('index');
-    });
-};
+    }]
+
+
 
 exports.folderCreatePost = async (req, res) => {
     await prisma.folder.create({
@@ -86,20 +114,42 @@ exports.membersLogOut = (req, res, next) => {
 
 exports.uploadFilePost = async (req, res) => {
     upload.single('myfile')
-    await prisma.file.create({
-        data: {
-            fileName: req.file
+    /* await prisma.file.create({
+         data: {
+             fileName: req.file
+         }
+     })*/
+    res.redirect('/');
+}
+
+exports.foldersUpdateGet = async (req, res) => {
+    const i = Number(req.params.i);
+
+    const folder = await prisma.folder.findUnique({
+        where: {
+            id: i,
         }
     })
+    res.render('updateFolders', { folder })
+}
+
+exports.foldersUpdatePost = async (req, res) => {
+    const i = Number(req.params.i);
+
+    await prisma.folder.update({
+        where: {
+            id: i,
+        },
+        data: {
+            folderName: req.body.myfolder,
+        }
+    })
+    const folders = await prisma.folder.findMany();
+    res.render("index", { folder: folders, user: req.user });
 }
 
 async function main() {
-    // const result = await prisma.$queryRaw`SELECT * FROM User`
-    /* const user = await prisma.user.create({
-          data: {
-            email: 'jj@gmail.com',
-          },
-        }); */
+
 
 }
 

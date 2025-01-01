@@ -11,5 +11,7 @@ filesRouter.get('/log-out', filesController.membersLogOut);
 filesRouter.post('/', filesController.folderCreatePost);
 filesRouter.get('/folders/:i', filesController.foldersGet);
 filesRouter.post('/folders/:i', upload.single('myfile'), filesController.uploadFilePost)
+filesRouter.get('/update/:i', filesController.foldersUpdateGet)
+filesRouter.post('/:i', filesController.foldersUpdatePost);
 
 module.exports = filesRouter;
