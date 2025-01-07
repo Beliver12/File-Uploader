@@ -10,7 +10,7 @@
     <H1>
         <%= folder.folderName %>
     </H1>
-    <form action="/<%= folder.id %>" method="POST">
+    <form action="/update/<%= folder.id %>" method="POST">
         <label for="myfolder">Change Folder Name:</label>
         <input value="<%= folder.folderName %>" type="text" name="myfolder" id="myfolder">
 

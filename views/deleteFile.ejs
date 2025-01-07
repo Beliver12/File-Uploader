@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+
+<body>
+    <h1>
+        <%= files.fileName %>
+    </h1>
+    <form id="delete" action="/deleteFile/<%= files.id %>" method="POST" style="display:inline;">
+        <button type="submit">Delete</button>
+    </form>
+</body>
+
+</html>

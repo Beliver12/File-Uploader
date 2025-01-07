@@ -7,8 +7,17 @@
 </head>
 
 <body>
-    <% if (locals.user) {%>
 
+    <% if (locals.user) {%>
+        <div>
+            <h1>File Uploader app</h1>
+            <h2>
+                <%= user.username %>
+            </h2>
+            <h3>
+                <a href="/log-out">LOG OUT</a>
+            </h3>
+        </div>
         <form action="" method="POST">
             <label for="myfolder">Create folder:</label>
             <input type="text" id="myfolder" name="myfolder">
@@ -28,15 +37,18 @@
                         </a>
 
                         <a href="/update/<%= folder[i].id %>">
-                            <button>update</button>
+                            <button>Update</button>
                         </a>
+                        <form id="delete" action="/delete/<%= folder[i].id %> " method="POST" style="display:inline;">
+                            <button type="submit">Delete</button>
+                        </form>
 
                     </li>
                     <%}%>
 
             </ul>
             <% }%>
-                <a href="/log-out">LOG OUT</a>
+
                 <%} else { %>
 
                     <h1>please log in</h1>
