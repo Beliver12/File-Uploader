@@ -7,17 +7,36 @@
 </head>
 
 <body>
-    <h1>
-        <%= files.fileName %>
-    </h1>
+    <div>
+        <h1>File Uploader app</h1>
+        <h3>
+            <a href="/">Home</a>
+        </h3>
+        <h2>
+            <%= user.username %>
+        </h2>
+        <h3>
+            <a href="/log-out">LOG OUT</a>
+        </h3>
+
+    </div>
+
     <ul>
         <li>
-            <strong>Size:</strong>
-            <%= files.fileSize %>
+            <h1>
+                <%= files.fileName %>
+            </h1>
+        </li>
+        <li>
+            <strong>Kb:</strong>
+            <%= Math.round(files.fileSize / 1024 * 100) / 100 %>
         </li>
         <li>
             <strong>Uploaded at:</strong>
-            <%= files.fileUploadTime %>
+            <%= files.fileUploadTime.toDateString() %>
+        </li>
+        <li>
+            <a href="./uploads/ <%= files.fileString %>" download="<%= files.fileName %>">Download</a>
         </li>
     </ul>
 </body>

@@ -34,8 +34,9 @@ model File {
   fileString     String
   fileSize       Int
   fileUploadTime DateTime @default(now())
+  publicId       String
   Folder         Folder?  @relation(fields: [folderId], references: [id])
-  folderId       Int?
+  folderId       Int
 }
 
 model Session {

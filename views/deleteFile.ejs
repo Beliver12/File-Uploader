@@ -7,12 +7,41 @@
 </head>
 
 <body>
-    <h1>
-        <%= files.fileName %>
-    </h1>
-    <form id="delete" action="/deleteFile/<%= files.id %>" method="POST" style="display:inline;">
-        <button type="submit">Delete</button>
-    </form>
+    <div>
+        <h1>File Uploader app</h1>
+        <h3>
+            <a href="/">Home</a>
+        </h3>
+        <h2>
+            <%= user.username %>
+        </h2>
+        <h3>
+            <a href="/log-out">LOG OUT</a>
+        </h3>
+
+    </div>
+
+    <ul>
+        <li>
+            <h1>
+                <%= files.fileName %>
+            </h1>
+        </li>
+        <li>
+            <strong>Kb:</strong>
+            <%= Math.round(files.fileSize / 1024 * 100) / 100 %>
+        </li>
+        <li>
+            <strong>Uploaded at:</strong>
+            <%= files.fileUploadTime.toDateString() %>
+        </li>
+        <li>
+            <form id="delete" action="/deleteFile/<%= files.id %>" method="POST" style="display:inline;">
+                <button type="submit">Delete</button>
+            </form>
+        </li>
+    </ul>
+
 </body>
 
 </html>

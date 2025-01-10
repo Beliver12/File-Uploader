@@ -2,6 +2,7 @@ const expressSession = require('express-session');
 const { PrismaSessionStore } = require('@quixo3/prisma-session-store');
 const { PrismaClient } = require('@prisma/client');
 const { body, validationResult } = require("express-validator");
+const fs = require('fs');
 require('dotenv').config();
 const cloudinary = require('cloudinary').v2;
 
@@ -104,6 +105,8 @@ exports.folderCreatePost = async (req, res) => {
     res.render('index', { user: req.user, folder: folders });
 };
 
+
+
 exports.foldersGet = async (req, res) => {
     const i = Number(req.params.i);
     const folder = await prisma.folder.findUnique({
@@ -158,6 +161,7 @@ exports.uploadFilePost = [
             await prisma.file.create({
                 data: {
                     fileString: results.url,
+                    publicId: results.public_id,
                     fileName: req.file.originalname,
                     fileSize: req.file.size,
                     folderId: i
@@ -165,17 +169,6 @@ exports.uploadFilePost = [
             })
         })();
 
-        const folder = await prisma.folder.findUnique({
-            where: {
-                id: i,
-            },
-        });
-
-        const file = await prisma.file.findMany({
-            where: {
-                folderId: i
-            }
-        })
         res.redirect(i)
     }
 ]
@@ -209,11 +202,38 @@ exports.foldersUpdatePost = async (req, res) => {
 exports.folderDeletePost = async (req, res) => {
     const i = Number(req.params.i);
 
-    await prisma.folder.delete({
+    const file = await prisma.file.findMany({
+        where: {
+            folderId: i,
+        },
+    })
+
+    file.forEach((f) => {
+        cloudinary.api.delete_resources(f.publicId)
+    }
+    );
+
+    file.forEach((f) =>
+        fs.unlink(`./uploads/${f.fileName}`, (err) => {
+            if (err) {
+                console.error(`Error removing file: ${err}`)
+                return;
+            }
+        })
+    )
+
+    await prisma.file.deleteMany({
+        where: {
+            folderId: i,
+        },
+    })
+
+    await prisma.folder.deleteMany({
         where: {
             id: i,
         },
-    })
+    });
+
     res.redirect("/")
 }
 
@@ -226,7 +246,7 @@ exports.fileGet = async (req, res) => {
             id: i,
         },
     })
-    res.render('files', { files });
+    res.render('files', { files, user: req.user });
 }
 
 exports.fileDeleteGet = async (req, res) => {
@@ -252,12 +272,20 @@ exports.fileDeletePost = async (req, res) => {
         },
     })
 
+    cloudinary.uploader.destroy(file.publicId)
 
     await prisma.file.delete({
         where: {
             id: i,
         },
     })
+
+    fs.unlink(`./uploads/${file.fileName}`, (err) => {
+        if (err) {
+            console.error(`Error removing file: ${err}`)
+            return;
+        }
+    });
 
     res.redirect(`/folders/${file.folderId}`)
 }
