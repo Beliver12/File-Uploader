@@ -13,7 +13,6 @@
         <h2>
             Folder Name: <%= folder.folderName %>
         </h2>
-
         <div class="links">
             <h2>
                 <%= user.username %>
@@ -25,15 +24,16 @@
                 <a href="/">Home</a>
             </h3>
         </div>
+
     </div>
 
-
-    <form class="updateFolder" action="/update/<%= folder.id %>" method="POST">
-        <label for="myfolder">Change Folder Name:</label>
-        <input value="<%= folder.folderName %>" type="text" name="myfolder" id="myfolder">
-        <input type="submit">
-    </form>
-
+    <div class="createFolder">
+        <form action="/folders/<%= folder.id %>" method="POST" enctype="multipart/form-data">
+            <label for="myfile">Upload a file:</label>
+            <input type="file" id="myfile" name="myfile"><br><br>
+            <input type="submit">
+        </form>
+    </div>
 </body>
 
 </html>

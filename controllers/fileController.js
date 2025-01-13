@@ -3,6 +3,7 @@ const { PrismaSessionStore } = require('@quixo3/prisma-session-store');
 const { PrismaClient } = require('@prisma/client');
 const { body, validationResult } = require("express-validator");
 const fs = require('fs');
+const zip = require('express-zip');
 require('dotenv').config();
 const cloudinary = require('cloudinary').v2;
 
@@ -92,17 +93,22 @@ exports.membersSignUpPost = [
         });
     }]
 
-
+exports.folderCreateGet = async (req, res) => {
+    res.render('createFolder', { user: req.user });
+}
 
 exports.folderCreatePost = async (req, res) => {
+
     await prisma.folder.create({
         data: {
             folderName: req.body.myfolder,
             userId: req.user.id
         }
     });
+
+
     const folders = await prisma.folder.findMany();
-    res.render('index', { user: req.user, folder: folders });
+    res.redirect('/');
 };
 
 
@@ -131,6 +137,17 @@ exports.membersLogOut = (req, res, next) => {
         res.redirect('/');
     });
 };
+
+exports.uploadFileGet = async (req, res) => {
+    const i = Number(req.params.i);
+    const folder = await prisma.folder.findUnique({
+        where: {
+            id: i,
+        },
+    });
+
+    res.render('uploadFile', { user: req.user, folder });
+}
 
 exports.uploadFilePost = [
     upload.single('myfile'),
@@ -182,7 +199,7 @@ exports.foldersUpdateGet = async (req, res) => {
             id: i,
         }
     })
-    res.render('updateFolders', { folder })
+    res.render('updateFolders', { folder, user: req.user })
 }
 
 exports.foldersUpdatePost = async (req, res) => {
@@ -257,9 +274,6 @@ exports.fileDeleteGet = async (req, res) => {
             id: i,
         },
     })
-
-
-
     res.render('deleteFile', { files: file, user: req.user })
 }
 
@@ -288,6 +302,23 @@ exports.fileDeletePost = async (req, res) => {
     });
 
     res.redirect(`/folders/${file.folderId}`)
+}
+
+exports.fileDownload = async (req, res) => {
+    const i = Number(req.params.i);
+
+    const files = await prisma.file.findUnique({
+        where: {
+            id: i,
+        },
+    })
+
+    res.download(`./uploads/${files.fileName}`, function (err) {
+        if (err) {
+            console.log(err)
+        }
+    })
+    // res.render('files', { files, user: req.user });
 }
 
 async function main() {

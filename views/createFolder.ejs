@@ -10,9 +10,6 @@
 <body>
     <div class="navbar">
         <h1>File Uploader app</h1>
-        <h2>
-            Folder Name: <%= folder.folderName %>
-        </h2>
 
         <div class="links">
             <h2>
@@ -25,15 +22,16 @@
                 <a href="/">Home</a>
             </h3>
         </div>
+
     </div>
 
-
-    <form class="updateFolder" action="/update/<%= folder.id %>" method="POST">
-        <label for="myfolder">Change Folder Name:</label>
-        <input value="<%= folder.folderName %>" type="text" name="myfolder" id="myfolder">
-        <input type="submit">
-    </form>
-
+    <div class="createFolder">
+        <form action="/createFolder" method="POST">
+            <label for="myfolder">Create:</label>
+            <input type="text" id="myfolder" maxlength="50" name="myfolder">
+            <input type="submit">
+        </form>
+    </div>
 </body>
 
 </html>

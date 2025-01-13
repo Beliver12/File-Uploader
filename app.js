@@ -9,11 +9,12 @@ const express = require('express');
 const { Pool } = require("pg");
 const membersRouter = require("./routes/fileRouter")
 const bodyParser = require('body-parser');
-
+const assetsPath = path.join(__dirname, "public");
 const app = express();
 const prisma = new PrismaClient()
 // Middleware to parse JSON bodies  
 app.use(bodyParser.json());
+app.use(express.static(assetsPath));
 
 // Middleware to parse URL-encoded bodies  
 app.use(bodyParser.urlencoded({ extended: true }));
