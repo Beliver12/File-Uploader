@@ -138,53 +138,43 @@ exports.membersLogOut = (req, res, next) => {
     });
 };
 
-exports.uploadFileGet = async (req, res) => {
-    const i = Number(req.params.i);
-    const folder = await prisma.folder.findUnique({
-        where: {
-            id: i,
-        },
-    });
 
-    res.render('uploadFile', { user: req.user, folder });
-}
 
 exports.uploadFilePost = [
     upload.single('myfile'),
     async (req, res) => {
         const i = Number(req.params.i);
 
-        (async function () {
-            const results = await cloudinary.uploader.upload(`./uploads/${req.file.originalname}`).catch((error) => {
-                console.log(error)
-            });
-            console.log(results)
-            const url = cloudinary.url(results.public_id, {
-                transformation: [
-                    {
-                        quality: 'auto',
-                        fetch_format: 'auto'
-                    },
 
-                    {
-                        width: 1200,
-                        height: 1200,
-                        crop: 'fill',
-                        gravity: 'auto'
-                    }
-                ]
-            })
-            console.log(url)
-            await prisma.file.create({
-                data: {
-                    fileString: results.url,
-                    publicId: results.public_id,
-                    fileName: req.file.originalname,
-                    fileSize: req.file.size,
-                    folderId: i
+        const results = await cloudinary.uploader.upload(`./uploads/${req.file.originalname}`).catch((error) => {
+            console.log(error)
+        });
+        console.log(results)
+        await prisma.file.create({
+            data: {
+                fileName: req.file.originalname,
+                fileSize: req.file.size,
+                folderId: i,
+                publicId: results.public_id,
+            }
+        })
+        const url = cloudinary.url(results.public_id, {
+            transformation: [
+                {
+                    quality: 'auto',
+                    fetch_format: 'auto'
+                },
+
+                {
+                    width: 1200,
+                    height: 1200,
+                    crop: 'fill',
+                    gravity: 'auto'
                 }
-            })
-        })();
+            ]
+        })
+        console.log(url)
+
 
         res.redirect(i)
     }

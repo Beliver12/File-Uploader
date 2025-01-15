@@ -11,7 +11,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "prisma": "^6.1.0"
+    "prisma": "^6.2.1"
   },
   "dependencies": {
     "@quixo3/prisma-session-store": "^3.1.13",

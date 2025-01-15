@@ -30,7 +30,11 @@
 
     <ul class="folders-content">
         <li>
-            <a href="/uploadFile/<%= folder.id %>"><button>Upload-file</button></a>
+            <form action="/folders/<%= folder.id %>" method="POST" enctype="multipart/form-data">
+                <label for="myfile">Upload a file:</label>
+                <input required type="file" id="myfile" name="myfile"><br><br>
+                <input type="submit">
+            </form>
         </li>
         <% if (locals.files) {%>
             <% for (let i=0; i < files.length; i++) { %>
