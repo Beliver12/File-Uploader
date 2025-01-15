@@ -55,7 +55,14 @@ const validateUsername = [
 ]
 
 exports.filesGet = async (req, res) => {
-    const folders = await prisma.folder.findMany();
+    let folders;
+    if (req.user) {
+        folders = await prisma.folder.findMany({
+            where: {
+                userId: req.user.id,
+            }
+        });
+    }
     res.render('index', { user: req.user, folder: folders, messages: req.session.messages });
     req.session.messages = [];
 };
