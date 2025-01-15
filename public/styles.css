@@ -1,0 +1,112 @@
+body {
+    margin: 0;
+    height: 100vh;
+    display: grid;
+    grid-template-rows: 80px 1fr;
+}
+
+/* navbar*/
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    border-bottom: 1px solid black;
+    background-color: rgb(24, 172, 172);
+
+
+    * {
+        margin: 12px;
+    }
+}
+
+.links {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30%;
+
+}
+
+/* navbar*/
+
+/*content*/
+ul {
+    align-self: center;
+    justify-self: center;
+    background-color: rgb(212, 212, 160);
+    padding: 10px;
+
+    * {
+        list-style-type: none;
+    }
+}
+
+ul>li>form {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+
+    * {
+        margin: 12px;
+
+    }
+}
+
+.updateFolder {
+    align-self: center;
+    justify-self: center;
+
+}
+
+.folders-content :not(:first-child) {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 3px;
+
+    * {
+        text-decoration: none;
+
+    }
+}
+
+.home-content {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 3px;
+    flex-direction: column;
+
+    * {
+        text-decoration: none;
+        display: flex;
+        justify-content: space-between;
+    }
+}
+
+.folders-content>li>form {
+    * {
+        margin: 0;
+    }
+}
+
+.home-content {
+    width: 960px;
+}
+
+.createFolder {
+    align-self: center;
+    justify-self: center;
+}
+
+/*content*/
+
+/*log-in and sign-up forms*/
+.sign-up {
+    height: 50%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    align-self: center;
+    grid-row: 2/3;
+}
+
+/*log-in and sign-up forms*/
