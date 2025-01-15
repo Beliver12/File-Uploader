@@ -39,7 +39,7 @@
                         </a>
 
                         <div>
-                            <a href="/update/<%= folder[i].id %>">
+                            <a id="update" href="/update/<%= folder[i].id %>">
                                 <button>Update</button>
                             </a>
                             <form id="delete" action="/delete/<%= folder[i].id %> " method="POST"
@@ -61,20 +61,22 @@
                     <h1>please log in</h1>
                     <a href="/sign-up">Sign-up</a>
                 </div>
-                <%- include("errors.ejs") %>
-                    <% if (locals.messages) {%>
-                        <p>
-                            <%= messages[0] %>
-                        </p>
-                        <%}%>
-                            <form class="sign-up" action="/log-in" method="POST">
-                                <label for="username">Username</label>
-                                <input id="username" name="username" placeholder="username" type="text" />
-                                <label for="password">Password</label>
-                                <input id="password" name="password" type="password" />
-                                <button>Log In</button>
-                            </form>
-                            <% }%>
+                <ul>
+                    <%- include("errors.ejs") %>
+                        <% if (locals.messages) {%>
+                            <p>
+                                <%= messages[0] %>
+                            </p>
+                            <%}%>
+                                <form class="sign-up" action="/log-in" method="POST">
+                                    <label for="username">Username</label>
+                                    <input required id="username" name="username" placeholder="username" type="text" />
+                                    <label for="password">Password</label>
+                                    <input required id="password" name="password" type="password" />
+                                    <button>Log In</button>
+                                </form>
+                                <% }%>
+                </ul>
 </body>
 
 </html>

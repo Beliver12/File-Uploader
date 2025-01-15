@@ -3,6 +3,7 @@ body {
     height: 100vh;
     display: grid;
     grid-template-rows: 80px 1fr;
+    background-color: rgb(47, 46, 46);
 }
 
 /* navbar*/
@@ -11,11 +12,12 @@ body {
     align-items: center;
     justify-content: space-around;
     border-bottom: 1px solid black;
-    background-color: rgb(24, 172, 172);
+    background-color: silver;
 
 
     * {
         margin: 12px;
+        color: black;
     }
 }
 
@@ -33,12 +35,23 @@ body {
 ul {
     align-self: center;
     justify-self: center;
-    background-color: rgb(212, 212, 160);
+    background-color: red;
     padding: 10px;
 
     * {
         list-style-type: none;
+        color: rgb(34, 34, 34);
+        font-size: 20px;
+        font-weight: bold;
     }
+}
+
+
+
+#update {
+
+    margin-right: 5px;
+
 }
 
 ul>li>form {
@@ -50,6 +63,11 @@ ul>li>form {
         margin: 12px;
 
     }
+}
+
+ul>li>a {
+    font-size: 20px;
+    font-weight: bold;
 }
 
 .updateFolder {
@@ -107,6 +125,15 @@ ul>li>form {
     flex-direction: column;
     align-self: center;
     grid-row: 2/3;
+
+}
+
+p {
+    color: black;
+}
+
+.sign-up-container {
+    background-color: rgb(212, 212, 160);
 }
 
 /*log-in and sign-up forms*/

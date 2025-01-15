@@ -15,16 +15,18 @@
             <a href="/">Home</a>
         </h3>
     </div>
-    <%- include("errors.ejs") %>
-        <form class="sign-up" action="" method="POST">
-            <label for="username">Username</label>
-            <input id="username" name="username" placeholder="username" type="text" required />
-            <label for="password">Password</label>
-            <input id="password" name="password" type="password" required />
-            <label for="confirmPassword">Confirm Password</label>
-            <input id="confirmPassword" name="confirmPassword" type="password" required />
-            <button>Sign Up</button>
-        </form>
+    <ul>
+        <%- include("errors.ejs") %>
+            <form class="sign-up" action="" method="POST">
+                <label for="username">Username</label>
+                <input id="username" name="username" placeholder="username" type="text" required />
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password" required />
+                <label for="confirmPassword">Confirm Password</label>
+                <input id="confirmPassword" name="confirmPassword" type="password" required />
+                <button>Sign Up</button>
+            </form>
+    </ul>
 
 </body>
 
