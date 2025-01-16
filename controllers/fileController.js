@@ -21,7 +21,7 @@ const storage = multer.diskStorage({
 })
 
 const fileFilter = (req, file, cb) => {
-    const filetypes = / .avi|.mkv|.iso|.zip|.jpeg|.gif|.pdf|.doc|.png|.jpg|.mp4|.svg/
+    const filetypes = / .avi|.mkv|.iso|.zip|.jpeg|.gif|.pdf|.doc|.png|.jpg|.mp4|.svg|.exe/
     const extname = filetypes.test((file.originalname).toLowerCase())
 
     if (extname) {
@@ -33,7 +33,7 @@ const fileFilter = (req, file, cb) => {
 
 const upload = multer({
     storage,
-    limits: { fileSize: 100000000 },
+    limits: { fileSize: 1000000000000000 },
     fileFilter,
 })
 
