@@ -1,0 +1,10 @@
+<!-- views/partials/uploadErrors.ejs -->
+<% if (locals.errors) {%>
+    <ul>
+        <% errors.forEach(function(error) { %>
+            <li>
+                <%= error.message %>
+            </li>
+            <% }); %>
+    </ul>
+    <% } %>

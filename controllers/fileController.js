@@ -11,6 +11,7 @@ const bcrypt = require('bcrypt');
 const multer = require("multer")
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
+
         cb(null, 'uploads')
     },
     filename: function (req, file, cb) {
@@ -19,7 +20,22 @@ const storage = multer.diskStorage({
     }
 })
 
-const upload = multer({ storage })
+const fileFilter = (req, file, cb) => {
+    const filetypes = / .avi|.mkv|.iso|.zip|.jpeg|.gif|.pdf|.doc|.png|.jpg|.mp4/
+    const extname = filetypes.test((file.originalname).toLowerCase())
+
+    if (extname) {
+        return cb(null, true);
+    } else {
+        cb('Error: Cant upload that type of file')
+    }
+}
+
+const upload = multer({
+    storage,
+    limits: { fileSize: 100000000 },
+    fileFilter,
+})
 
 cloudinary.config({
     cloud_name: 'dmaipmbiv',
@@ -149,41 +165,64 @@ exports.membersLogOut = (req, res, next) => {
 
 exports.uploadFilePost = [
     upload.single('myfile'),
-    async (req, res) => {
+    async (req, res, next) => {
         const i = Number(req.params.i);
-
-
-        const results = await cloudinary.uploader.upload(`./uploads/${req.file.originalname}`).catch((error) => {
-            console.log(error)
+        const folder = await prisma.folder.findUnique({
+            where: {
+                id: i,
+            },
         });
-        console.log(results)
-        await prisma.file.create({
-            data: {
-                fileName: req.file.originalname,
-                fileSize: req.file.size,
-                folderId: i,
-                publicId: results.public_id,
+
+        const file = await prisma.file.findMany({
+            where: {
+                folderId: i
             }
         })
-        const url = cloudinary.url(results.public_id, {
-            transformation: [
-                {
-                    quality: 'auto',
-                    fetch_format: 'auto'
-                },
+        let errors = [];
+        const results = await cloudinary.uploader.upload(`./uploads/${req.file.originalname}`).catch((error) => {
+            errors.push(error)
+        });
 
-                {
-                    width: 1200,
-                    height: 1200,
-                    crop: 'fill',
-                    gravity: 'auto'
+        if (errors.length > 0) {
+            return res.status(400).render('folders', {
+
+                errors: errors,
+                folder, files: file, user: req.user
+            });
+            // errors = [];
+            // console.log(error)
+        } else {
+
+
+            console.log(results)
+            await prisma.file.create({
+                data: {
+                    fileName: req.file.originalname,
+                    fileSize: req.file.size,
+                    folderId: i,
+                    publicId: results.public_id,
                 }
-            ]
-        })
-        console.log(url)
+            })
+            const url = cloudinary.url(results.public_id, {
+                transformation: [
+                    {
+                        quality: 'auto',
+                        fetch_format: 'auto'
+                    },
+
+                    {
+                        width: 1200,
+                        height: 1200,
+                        crop: 'fill',
+                        gravity: 'auto'
+                    }
+                ]
+            })
+            console.log(url)
 
 
-        res.redirect(i)
+            res.redirect(i)
+        }
     }
 ]
 
