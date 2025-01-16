@@ -21,7 +21,7 @@ const storage = multer.diskStorage({
 })
 
 const fileFilter = (req, file, cb) => {
-    const filetypes = / .avi|.mkv|.iso|.zip|.jpeg|.gif|.pdf|.doc|.png|.jpg|.mp4/
+    const filetypes = / .avi|.mkv|.iso|.zip|.jpeg|.gif|.pdf|.doc|.png|.jpg|.mp4|.svg/
     const extname = filetypes.test((file.originalname).toLowerCase())
 
     if (extname) {
@@ -178,51 +178,64 @@ exports.uploadFilePost = [
                 folderId: i
             }
         })
+        let results
         let errors = [];
-        const results = await cloudinary.uploader.upload(`./uploads/${req.file.originalname}`).catch((error) => {
-            errors.push(error)
-        });
-
-        if (errors.length > 0) {
-            return res.status(400).render('folders', {
-
-                errors: errors,
-                folder, files: file, user: req.user
+        if (req.file.mimetype.includes("image")) {
+            results = await cloudinary.uploader.upload(`./uploads/${req.file.originalname}`).catch((error) => {
+                errors.push(error)
             });
-            // errors = [];
-            // console.log(error)
+
+            if (errors.length > 0) {
+                return res.status(400).render('folders', {
+
+                    errors: errors,
+                    folder, files: file, user: req.user
+                });
+                // errors = [];
+                // console.log(error)
+            } else {
+
+
+                console.log(results)
+                await prisma.file.create({
+                    data: {
+                        fileName: req.file.originalname,
+                        fileSize: req.file.size,
+                        folderId: i,
+                        publicId: results.public_id,
+                    }
+                })
+                const url = cloudinary.url(results.public_id, {
+                    transformation: [
+                        {
+                            quality: 'auto',
+                            fetch_format: 'auto'
+                        },
+
+                        {
+                            width: 1200,
+                            height: 1200,
+                            crop: 'fill',
+                            gravity: 'auto'
+                        }
+                    ]
+                })
+
+                console.log(url)
+            }
         } else {
-
-
-            console.log(results)
+            //results.public_id = req.file.originalname;
             await prisma.file.create({
                 data: {
                     fileName: req.file.originalname,
                     fileSize: req.file.size,
                     folderId: i,
-                    publicId: results.public_id,
+                    publicId: req.file.originalname,
                 }
             })
-            const url = cloudinary.url(results.public_id, {
-                transformation: [
-                    {
-                        quality: 'auto',
-                        fetch_format: 'auto'
-                    },
-
-                    {
-                        width: 1200,
-                        height: 1200,
-                        crop: 'fill',
-                        gravity: 'auto'
-                    }
-                ]
-            })
-            console.log(url)
-
-
-            res.redirect(i)
         }
+        res.redirect(i)
+
     }
 ]
 
