@@ -165,7 +165,7 @@ exports.membersLogOut = (req, res, next) => {
 
 exports.uploadFilePost = [
     upload.single('myfile'),
-    async (req, res, next) => {
+    async (req, res) => {
         const i = Number(req.params.i);
         const folder = await prisma.folder.findUnique({
             where: {
